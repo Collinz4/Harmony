@@ -26,7 +26,7 @@ def submit_metric():
     """
 
     gson = json.loads(request.get_json())
-    
+
     new_point = DataPoint(
         computer_name=gson["computer_name"],
         cpu_percentage=gson["cpu_percentage"],
@@ -38,7 +38,7 @@ def submit_metric():
         if not machines.get(new_point.computer_name):
             machines[new_point.computer_name] = Timeline(maxsize=100)
         machines[new_point.computer_name].append(new_point)
-    
+
     return Response(status=200)
 
 
@@ -51,11 +51,7 @@ def stats(computer_name: str):
         if not machines.get(computer_name):
             return jsonify(message="Computer Does Not Exist"), 404
 
-        proxy_dict = {}
-        for key in machines.keys():
-            proxy_dict[key] = asdict(machines.get(key))
-
-        return jsonify(stats=proxy_dict)
+        return jsonify(stats=asdict(machines.get(computer_name)))
 
 
 @api.route("/computers", methods=["GET"])

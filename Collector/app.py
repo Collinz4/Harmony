@@ -1,3 +1,7 @@
+"""
+Main module for running collector.
+"""
+
 import os
 import logging
 import sys
@@ -5,7 +9,6 @@ import sys
 from flask import Flask
 
 from collector import api
-import conf
 
 
 def pre_check():
@@ -13,16 +16,6 @@ def pre_check():
     Initial check for environment variables.
     """
 
-    logging.info("Pre Check Start...")
-    if not os.environ.get("SERVER_ADDRESS"):
-        logging.error("'SERVER_ADDRESS' Not Set! Aborting...")
-        sys.exit(1)
-    if not os.environ.get("SERVER_PORT"):
-        logging.error("'SERVER_PORT' Not Set! Aborting...")
-        sys.exit(1)
-    if not os.environ.get("SERVER_DEBUG_MODE"):
-        logging.error("'SERVER_DEBUG_MODE' Not Set! Aborting...")
-        sys.exit(1)
     if not os.environ.get("API_KEY"):
         logging.error("'API_KEY' Not Set! Aborting...")
         sys.exit(1)
@@ -31,16 +24,19 @@ def pre_check():
 
 def create_app() -> Flask:
     """
-    Flask factory. Keep to 1 with the current implementation.
+    Flask factory. Stay with 1 with the current implementation.
     """
 
-    app = Flask(__name__)
-    app.register_blueprint(api)
-    return app
+    _application = Flask(__name__)
+    _application.register_blueprint(api)
+    return _application
 
 
 if __name__ == "__main__":
     pre_check()
-    app = create_app()
-    app.debug = conf.SERVER_DEBUG_MODE
-    app.run(host=conf.SERVER_ADDRESS, port=conf.SERVER_PORT)
+    application = create_app()
+    application.debug = True
+    application.run(
+        host="0.0.0.0",
+        port=5000
+    )
