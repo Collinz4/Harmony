@@ -14,10 +14,12 @@ import requests
 from requests.exceptions import RequestException
 
 
-def setup():
+def pre_check():
     """
     Initial check for environment variables.
     """
+
+    logging.info("Pre Check Start...")
     if not os.environ.get("API_KEY"):
         logging.error("'API_KEY' Not Set! Aborting...")
         sys.exit(1)
@@ -52,7 +54,7 @@ def run():
 
         try:
             requests.post(
-                url=f"https://{os.environ.get('COLLECTOR_DOMAIN')}/collector/stats",
+                url=f"https://{os.environ.get('COLLECTOR_DOMAIN')}/collector/submit",
                 headers=headers,
                 json=json.dumps(compute_data),
                 timeout=5
@@ -61,11 +63,11 @@ def run():
         except RequestException:
             request_errors += 1
             logging.warning(
-                "Error submitting metrics to collector for the {request_errors} time(s) in a row."
+                f"Error submitting metrics to collector for the {request_errors} time(s) in a row."
             )
         time.sleep(int(os.environ.get("REPORTING_RATE")))
 
 
 if __name__ == "__main__":
-    setup()
+    pre_check()
     run()
