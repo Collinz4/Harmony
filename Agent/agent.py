@@ -14,10 +14,12 @@ import requests
 from requests.exceptions import RequestException
 
 
-def setup():
+def pre_check():
     """
     Initial check for environment variables.
     """
+
+    logging.info("Pre Check Start...")
     if not os.environ.get("API_KEY"):
         logging.error("'API_KEY' Not Set! Aborting...")
         sys.exit(1)
@@ -39,7 +41,6 @@ def run():
     """
 
     logging.info("Starting Agent Metric Service")
-    request_errors = 0
     compute_data = {}
     compute_data["computer_name"] = os.environ.get("COMPUTER_NAME")
 
@@ -52,20 +53,16 @@ def run():
 
         try:
             requests.post(
-                url=f"https://{os.environ.get('COLLECTOR_DOMAIN')}/collector/stats",
+                url=os.environ.get("COLLECTOR_DOMAIN"),
                 headers=headers,
                 json=json.dumps(compute_data),
                 timeout=5
             )
-            request_errors = 0
         except RequestException:
-            request_errors += 1
-            logging.warning(
-                "Error submitting metrics to collector for the {request_errors} time(s) in a row."
-            )
+            logging.error("Error submitting metrics to collector.")
         time.sleep(int(os.environ.get("REPORTING_RATE")))
 
 
 if __name__ == "__main__":
-    setup()
+    pre_check()
     run()
