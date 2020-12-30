@@ -1,0 +1,28 @@
+
+<div class="instance-card">
+    <h2>{{ instanceName }}</h2>
+    <div class="row">
+        <div class="col">
+            <div class="cpu-chart">
+                <canvas baseChart
+                    [datasets]="cpu_chartData"
+                    [labels]="cpu_xAxisTimeline"
+                    [options]="chartOptions"
+                    [legend]="chartLegend"
+                    [chartType]="chartType">
+                </canvas>
+            </div>
+        </div>
+        <div class="col">
+            <div class="memory-chart">
+                <canvas baseChart
+                    [datasets]="memory_chartData"
+                    [labels]="memory_xAxisTimeline"
+                    [options]="chartOptions"
+                    [legend]="chartLegend"
+                    [chartType]="chartType">
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>
