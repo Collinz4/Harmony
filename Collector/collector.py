@@ -2,6 +2,7 @@
 API endpoints for the collector application.
 """
 
+import os
 from threading import Lock
 from dataclasses import asdict
 
@@ -22,10 +23,15 @@ def add_cors_header(resp):
     """
     Allows origin support for requests from all domains.
     """
-    resp.headers['X-Content-Type-Options'] = '*'
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    resp.headers['Access-Control-Allow-Headers'] = '*'
+    resp.headers['X-Content-Type-Options'] = os.environ.get("X_CONTENT_TYPE_OPTIONS")
+    resp.headers['Access-Control-Allow-Origin'] = os.environ.get("ACCESS_CONTROL_ALLOW_ORIGIN")
+    resp.headers['Access-Control-Allow-Headers'] = os.environ.get("ACCESS_CONTROL_ALLOW_HEADERS")
     return resp
+
+
+@api.route("/health", methods=["GET"])
+def health():
+    return Response(status=200)
 
 
 @api.route("/submit", methods=["POST"])
@@ -47,7 +53,7 @@ def submit_metric():
 
     with lock:
         if not instances.get(new_point.computer_name):
-            instances[new_point.computer_name] = Timeline(maxsize=100)
+            instances[new_point.computer_name] = Timeline(maxsize=1000)
         instances[new_point.computer_name].append(new_point)
 
     return Response(status=200)
