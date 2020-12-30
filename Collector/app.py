@@ -28,6 +28,9 @@ def pre_check():
     if not os.environ.get("ACCESS_CONTROL_ALLOW_HEADERS"):
         logging.error("'ACCESS_CONTROL_ALLOW_HEADERS' Not Set! Aborting...")
         sys.exit(1)
+    if not os.environ.get("COLLECTOR_BUFFER_SIZE"):
+        logging.error("'COLLECTOR_BUFFER_SIZE' Not Set! Aborting...")
+        sys.exit(1)
     logging.info("Initialization Checks Passed!")
 
 

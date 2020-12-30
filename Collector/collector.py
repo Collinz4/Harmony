@@ -53,7 +53,9 @@ def submit_metric():
 
     with lock:
         if not instances.get(new_point.computer_name):
-            instances[new_point.computer_name] = Timeline(maxsize=1000)
+            instances[new_point.computer_name] = Timeline(
+                maxsize=int(os.environ.get("COLLECTOR_BUFFER_SIZE"))
+            )
         instances[new_point.computer_name].append(new_point)
 
     return Response(status=200)
