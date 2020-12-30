@@ -17,26 +17,28 @@ export class CollectorService {
     })
   }
 
+  private apiDomain: string = 'http://localhost:8080';
+
   constructor(
     private http: HttpClient,
   ) { }
 
   getInstanceNames(): Observable<string[]> {
-    return this.http.get<string[]>('http://localhost:5000/instances', this.httpOptions).pipe(
+    return this.http.get<string[]>(`${this.apiDomain}/instances`, this.httpOptions).pipe(
       tap(_ => console.log('Successfully fetched instance names.')),
       catchError(this.recoverError<string[]>('getInstanceNames'))
     );
   }
 
   getInstanceMetrics(instanceName: string): Observable<Timeline> {
-    return this.http.get<Timeline>(`http://localhost:5000/timeline/${instanceName}`, this.httpOptions).pipe(
+    return this.http.get<Timeline>(`${this.apiDomain}/timeline/${instanceName}`, this.httpOptions).pipe(
       tap(_ => console.log(`Successfully fetched timeline for ${instanceName}.`)),
       catchError(this.recoverError<Timeline>('getInstanceMetrics'))
     );
   }
 
   getInstanceLatestDataPoint(instanceName: string): Observable<DataPoint> {
-    return this.http.get<DataPoint>(`http://localhost:5000/timeline/${instanceName}/latest`, this.httpOptions).pipe(
+    return this.http.get<DataPoint>(`${this.apiDomain}/timeline/${instanceName}/latest`, this.httpOptions).pipe(
       tap(_ => console.log(`Successfully fetched latest data point for ${instanceName}`)),
       catchError(this.recoverError<DataPoint>('getInstanceLatestMetric'))
     );

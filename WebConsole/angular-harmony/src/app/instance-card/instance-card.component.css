@@ -1,8 +1,22 @@
 
 .cpu-chart {
     display: block;
+    position: relative;
+    width: 100%;
 }
 
 .memory-chart {
     display: block;
+    position: relative;
+    width: 100%;
+}
+
+.card {
+    width: 85%;
+    align-self: center;
+    margin-top: 15pt;
+}
+
+.card-header h2 {
+    text-align: start;
 }

@@ -6,7 +6,6 @@ import { ChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { InstanceDetailComponent } from './instance-detail/instance-detail.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HttpClientModule } from '@angular/common/http';
 import { InstanceCardComponent } from './instance-card/instance-card.component';
@@ -14,7 +13,6 @@ import { InstanceCardComponent } from './instance-card/instance-card.component';
 @NgModule({
   declarations: [
     AppComponent,
-    InstanceDetailComponent,
     DashboardComponent,
     InstanceCardComponent,
   ],

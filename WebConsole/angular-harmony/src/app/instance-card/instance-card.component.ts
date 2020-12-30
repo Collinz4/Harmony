@@ -21,7 +21,14 @@ export class InstanceCardComponent implements OnInit {
     scales:{
       xAxes: [{
           display: false
-      }]
+      }],
+      yAxes: [{
+        ticks: {
+            beginAtZero: true,
+            suggestedMin: 0,
+            suggestedMax: 100
+        }
+    }]
     },
   };
   public chartType = 'line';
@@ -45,7 +52,7 @@ export class InstanceCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTimeline();
-    this.intervalID = setInterval(() => this.getTimeline(), 500);
+    this.intervalID = setInterval(() => this.getTimeline(), 30000);
   }
 
   ngOnDestroy() {
