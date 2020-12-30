@@ -43,3 +43,11 @@ class Timeline:
         Empties the collection.
         """
         self.timeline = []
+
+    def latest(self):
+        """
+        Returns the front most data point object in the list.
+        """
+        if len(self.timeline) == 0:
+            return None
+        return self.timeline[len(self.timeline) - 1]

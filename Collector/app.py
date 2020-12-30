@@ -33,6 +33,7 @@ def create_app() -> Flask:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     pre_check()
     application = create_app()
     application.debug = True
