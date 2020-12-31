@@ -2,19 +2,36 @@
 API endpoints for the collector application.
 """
 
+import os
 from threading import Lock
 from dataclasses import asdict
 
 from flask import Blueprint, json, request, jsonify
 from flask.wrappers import Response
 
-from datapoint import DataPoint, Timeline
+from models import DataPoint, Timeline
 import auth
 
 
 api = Blueprint('collector', __name__, url_prefix='/')
-machines = {} # name : Timeline
+instances = {} # name : Timeline
 lock = Lock()
+
+
+@api.after_request
+def add_cors_header(resp):
+    """
+    Allows origin support for requests from all domains.
+    """
+    resp.headers['X-Content-Type-Options'] = os.environ.get("X_CONTENT_TYPE_OPTIONS")
+    resp.headers['Access-Control-Allow-Origin'] = os.environ.get("ACCESS_CONTROL_ALLOW_ORIGIN")
+    resp.headers['Access-Control-Allow-Headers'] = os.environ.get("ACCESS_CONTROL_ALLOW_HEADERS")
+    return resp
+
+
+@api.route("/health", methods=["GET"])
+def health():
+    return Response(status=200)
 
 
 @api.route("/submit", methods=["POST"])
@@ -35,30 +52,50 @@ def submit_metric():
     )
 
     with lock:
-        if not machines.get(new_point.computer_name):
-            machines[new_point.computer_name] = Timeline(maxsize=100)
-        machines[new_point.computer_name].append(new_point)
+        if not instances.get(new_point.computer_name):
+            instances[new_point.computer_name] = Timeline(
+                maxsize=int(os.environ.get("COLLECTOR_BUFFER_SIZE"))
+            )
+        instances[new_point.computer_name].append(new_point)
 
     return Response(status=200)
 
 
-@api.route("/stats/<computer_name>", methods=["GET"])
-def stats(computer_name: str):
+@api.route("/timeline/<instance_name>", methods=["GET", "OPTIONS"])
+def specific_timeline(instance_name: str):
     """
     Returns the time series data from a specific computer.
     """
-    with lock:
-        if not machines.get(computer_name):
-            return jsonify(message="Computer Does Not Exist"), 404
 
-        return jsonify(stats=asdict(machines.get(computer_name)))
+    if request.method == "GET":
+        with lock:
+            if not instances.get(instance_name):
+                return jsonify(message="Instance Does Not Exist"), 404
+            return jsonify(asdict(instances.get(instance_name)))
+    return Response(status=200)
 
 
-@api.route("/computers", methods=["GET"])
-def computers():
+@api.route("/timeline/<instance_name>/latest", methods=["GET", "OPTIONS"])
+def lastest_datapoint(instance_name: str):
+    """
+    Returns the latest time series data for a specific instance.
+    """
+    if request.method == "GET":
+        with lock:
+            if not instances.get(instance_name):
+                return jsonify(message="Instance Does Not Exist"), 404
+            return jsonify(asdict(instances.get(instance_name).latest()))
+    return Response(status=200)
+
+
+@api.route("/instances", methods=["GET", "OPTIONS"])
+def list_instance_name():
     """
     Returns the list of computers being recorded.
     """
-    with lock:
-        keys = list(machines.keys())
-    return jsonify(computers=keys)
+
+    if request.method == "GET":
+        with lock:
+            names = list(instances.keys())
+        return jsonify(names)
+    return Response(status=200)

@@ -19,6 +19,18 @@ def pre_check():
     if not os.environ.get("API_KEY"):
         logging.error("'API_KEY' Not Set! Aborting...")
         sys.exit(1)
+    if not os.environ.get("X_CONTENT_TYPE_OPTIONS"):
+        logging.error("'X_CONTENT_TYPE_OPTIONS' Not Set! Aborting...")
+        sys.exit(1)
+    if not os.environ.get("ACCESS_CONTROL_ALLOW_ORIGIN"):
+        logging.error("'ACCESS_CONTROL_ALLOW_ORIGIN' Not Set! Aborting...")
+        sys.exit(1)
+    if not os.environ.get("ACCESS_CONTROL_ALLOW_HEADERS"):
+        logging.error("'ACCESS_CONTROL_ALLOW_HEADERS' Not Set! Aborting...")
+        sys.exit(1)
+    if not os.environ.get("COLLECTOR_BUFFER_SIZE"):
+        logging.error("'COLLECTOR_BUFFER_SIZE' Not Set! Aborting...")
+        sys.exit(1)
     logging.info("Initialization Checks Passed!")
 
 
@@ -33,6 +45,7 @@ def create_app() -> Flask:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     pre_check()
     application = create_app()
     application.debug = True
