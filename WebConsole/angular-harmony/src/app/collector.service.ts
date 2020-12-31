@@ -17,7 +17,7 @@ export class CollectorService {
     })
   }
 
-  private apiDomain: string = 'http://localhost:8080';
+  private apiDomain: string = 'https://api.harmony.datapack.co';
 
   constructor(
     private http: HttpClient,
