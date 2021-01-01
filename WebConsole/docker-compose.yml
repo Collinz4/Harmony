@@ -1,0 +1,13 @@
+---
+version: "3.5"
+services:
+  harmony-angular:
+    image: harmony-angular
+    container_name: harmony-angular
+    restart: always
+    ports:
+      - 8081:80
+networks:
+  harmony-angular-net:
+    name: harmony-angular-net
+    driver: bridge

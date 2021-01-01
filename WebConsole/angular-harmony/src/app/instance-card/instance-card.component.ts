@@ -74,7 +74,7 @@ export class InstanceCardComponent implements OnInit {
           this.cpu_xAxisTimeline.push(new Date(datapoint.timestamp));
           this.cpu_chartData[0].data.push(datapoint.cpu_percentage);
 
-          this.memory_xAxisTimeline.push(new Date(datapoint.memory_percentage));
+          this.memory_xAxisTimeline.push(new Date(datapoint.timestamp));
           this.memory_chartData[0].data.push(datapoint.memory_percentage);
         });
       }

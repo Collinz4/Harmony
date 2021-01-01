@@ -1,0 +1,13 @@
+
+[Unit]
+Description=Harmony metrics collection Agent.
+After=network.target
+
+[Service]
+ExecStart=python3 <path to agent file>
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+Environment=API_KEY=''
+Environment=COMPUTER_NAME=''
+Environment=COLLECTOR_DOMAIN=''
+Environment=REPORTING_RATE='30'
